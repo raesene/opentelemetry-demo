@@ -59,8 +59,6 @@ services:
         limits:
           memory: 300M
     restart: unless-stopped
-    ports:
-      - "${AD_SERVICE_PORT}"
     environment:
       - AD_SERVICE_PORT
       - FLAGD_HOST
@@ -91,8 +89,6 @@ services:
         limits:
           memory: 160M
     restart: unless-stopped
-    ports:
-      - "${CART_SERVICE_PORT}"
     environment:
       - CART_SERVICE_PORT
       - FLAGD_HOST
@@ -125,8 +121,6 @@ services:
         limits:
           memory: 20M
     restart: unless-stopped
-    ports:
-      - "${CHECKOUT_SERVICE_PORT}"
     environment:
       - FLAGD_HOST
       - FLAGD_PORT
@@ -177,8 +171,6 @@ services:
         limits:
           memory: 20M
     restart: unless-stopped
-    ports:
-      - "${CURRENCY_SERVICE_PORT}"
     environment:
       - CURRENCY_SERVICE_PORT
       - VERSION=${IMAGE_VERSION}
@@ -202,8 +194,6 @@ services:
         limits:
           memory: 100M
     restart: unless-stopped
-    ports:
-      - "${EMAIL_SERVICE_PORT}"
     environment:
       - APP_ENV=production
       - EMAIL_SERVICE_PORT
@@ -260,8 +250,6 @@ services:
         limits:
           memory: 200M
     restart: unless-stopped
-    ports:
-      - "${FRONTEND_PORT}"
     environment:
       - PORT=${FRONTEND_PORT}
       - FRONTEND_ADDR
@@ -316,8 +304,8 @@ services:
           memory: 50M
     restart: unless-stopped
     ports:
-      - "${ENVOY_PORT}:${ENVOY_PORT}"
-      - 10000:10000
+      - "127.0.0.1:${ENVOY_PORT}:${ENVOY_PORT}"
+      - 127.0.0.1:10000:10000
     environment:
       - FRONTEND_PORT
       - FRONTEND_HOST
@@ -358,8 +346,6 @@ services:
         limits:
           memory: 120M
     restart: unless-stopped
-    ports:
-      - "${IMAGE_PROVIDER_PORT}"
     environment:
       - IMAGE_PROVIDER_PORT
       - OTEL_COLLECTOR_HOST
@@ -385,8 +371,6 @@ services:
         limits:
           memory: 1G
     restart: unless-stopped
-    ports:
-      - "${LOCUST_WEB_PORT}"
     environment:
       - LOCUST_WEB_PORT
       - LOCUST_USERS
@@ -423,8 +407,6 @@ services:
         limits:
           memory: 120M
     restart: unless-stopped
-    ports:
-      - "${PAYMENT_SERVICE_PORT}"
     environment:
       - PAYMENT_SERVICE_PORT
       - FLAGD_HOST
@@ -454,8 +436,6 @@ services:
         limits:
           memory: 20M
     restart: unless-stopped
-    ports:
-      - "${PRODUCT_CATALOG_SERVICE_PORT}"
     environment:
       - PRODUCT_CATALOG_SERVICE_PORT
       - FLAGD_HOST
@@ -485,8 +465,6 @@ services:
         limits:
           memory: 40M
     restart: unless-stopped
-    ports:
-      - "${QUOTE_SERVICE_PORT}"
     environment:
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://${OTEL_COLLECTOR_HOST}:${OTEL_COLLECTOR_PORT_HTTP}
       - OTEL_PHP_AUTOLOAD_ENABLED=true
@@ -513,8 +491,6 @@ services:
         limits:
           memory: 500M               # This is high to enable supporting the recommendationCache feature flag use case
     restart: unless-stopped
-    ports:
-      - "${RECOMMENDATION_SERVICE_PORT}"
     environment:
       - RECOMMENDATION_SERVICE_PORT
       - PRODUCT_CATALOG_SERVICE_ADDR
@@ -549,8 +525,6 @@ services:
         limits:
           memory: 20M
     restart: unless-stopped
-    ports:
-      - "${SHIPPING_SERVICE_PORT}"
     environment:
       - SHIPPING_SERVICE_PORT
       - QUOTE_SERVICE_ADDR
@@ -583,8 +557,6 @@ services:
       "--uri",
       "file:./etc/flagd/demo.flagd.json"
     ]
-    ports:
-      - 8013
     volumes:
       - ./src/flagd:/etc/flagd
     logging:
@@ -629,8 +601,6 @@ services:
         limits:
           memory: 20M
     restart: unless-stopped
-    ports:
-      - "${REDIS_PORT}"
     logging: *logging
 
 
@@ -652,9 +622,6 @@ services:
         limits:
           memory: 400M
     restart: unless-stopped
-    ports:
-      - "${JAEGER_SERVICE_PORT}"         # Jaeger UI
-      - "${OTEL_COLLECTOR_PORT_GRPC}"
     environment:
       - METRICS_STORAGE_TYPE=prometheus
     logging: *logging
@@ -673,8 +640,6 @@ services:
     volumes:
       - ./src/grafana/grafana.ini:/etc/grafana/grafana.ini
       - ./src/grafana/provisioning/:/etc/grafana/provisioning/
-    ports:
-      - "${GRAFANA_SERVICE_PORT}"
     logging: *logging
 
   # OpenTelemetry Collector
@@ -690,9 +655,6 @@ services:
     volumes:
       - ./src/otelcollector/otelcol-config.yml:/etc/otelcol-config.yml
       - ./src/otelcollector/otelcol-config-extras.yml:/etc/otelcol-config-extras.yml
-    ports:
-      - "${OTEL_COLLECTOR_PORT_GRPC}"
-      - "${OTEL_COLLECTOR_PORT_HTTP}"
     depends_on:
       - jaeger
     logging: *logging
@@ -721,7 +683,7 @@ services:
           memory: 300M
     restart: unless-stopped
     ports:
-      - "${PROMETHEUS_SERVICE_PORT}:${PROMETHEUS_SERVICE_PORT}"
+      - "127.0.0.1:${PROMETHEUS_SERVICE_PORT}:${PROMETHEUS_SERVICE_PORT}"
     logging: *logging
   
   node-exporter:
@@ -738,7 +700,7 @@ services:
       - '--path.sysfs=/host/sys'
       - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
     ports:
-      - "${PROMETHEUS_NODE_EXPORTER_PORT}:${PROMETHEUS_NODE_EXPORTER_PORT}"
+      - "127.0.0.1:${PROMETHEUS_NODE_EXPORTER_PORT}:${PROMETHEUS_NODE_EXPORTER_PORT}"
   
   # Tester Tools
   pentest:
@@ -770,8 +732,6 @@ services:
       nofile:
         soft: 65536
         hard: 65536
-    ports:
-      - "9200"
     logging: *logging
 
   # *****
@@ -871,7 +831,7 @@ services:
         target: /app/provision.yaml
     command: --provisioning-file /app/provision.yaml
     ports:
-      - 11633:11633
+      - 127.0.0.1:11633:11633
     extra_hosts:
       - "host.docker.internal:host-gateway"
     depends_on:
@@ -899,5 +859,3 @@ services:
       interval: 1s
       timeout: 5s
       retries: 60
-    ports:
-      - 5432

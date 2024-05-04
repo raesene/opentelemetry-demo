@@ -1,3 +1,19 @@
+
+
+# BSides Dublin 2024 Talk Demo
+
+This is a forked version of the OpenTelemetry demo, customized to provide demos for a talk on Observability for pentesters.
+
+## Changes
+
+- Added Prometheus Node Exporter to demonstrate some of the information it discloses.
+- Changed up the `ports` in the Docker compose so it's not exposing the services on all interfaces.
+- Added a `pentester` container to simulate what a tester might be able to see from inside an environment with these tools seutp.
+
+
+--- Original README below ---
+
+
 <!-- markdownlint-disable-next-line -->
 # <img src="https://opentelemetry.io/img/logos/opentelemetry-logo-nav.png" alt="OTel logo" width="45"> OpenTelemetry Demo
 
