@@ -305,7 +305,6 @@ services:
     restart: unless-stopped
     ports:
       - "127.0.0.1:${ENVOY_PORT}:${ENVOY_PORT}"
-      - 127.0.0.1:10000:10000
     environment:
       - FRONTEND_PORT
       - FRONTEND_HOST
@@ -625,6 +624,8 @@ services:
     environment:
       - METRICS_STORAGE_TYPE=prometheus
     logging: *logging
+    ports:
+      - "127.0.0.1:16686:16686"
 
   # Grafana
   grafana:
@@ -641,6 +642,8 @@ services:
       - ./src/grafana/grafana.ini:/etc/grafana/grafana.ini
       - ./src/grafana/provisioning/:/etc/grafana/provisioning/
     logging: *logging
+    ports:
+      - "127.0.0.1:3000:3000"
 
   # OpenTelemetry Collector
   otelcol:
